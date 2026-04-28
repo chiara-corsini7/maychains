@@ -11,7 +11,7 @@ The polymers will be described by:
 * Fene bonds
 * Mass = 1
 * Charge = 0
-* Shifted LJ potential (\sigma=1, \epsilon=1)
+* Shifted LJ potential ($\sigma$=1, $\epsilon$=0.3)
 
 ## Step 1. Initialization
 
