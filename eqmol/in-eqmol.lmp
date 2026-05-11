@@ -1,0 +1,65 @@
+# equilibtration
+
+units           lj     # <-- temperature has units of energy, kB=1
+boundary p p p     
+
+atom_style      full
+bond_style      fene
+# angle and dihedral if needed
+
+special_bonds fene 
+
+pair_style  lj/cut 4.0  
+pair_modify shift yes                   
+
+#pair_style soft 2.5
+
+read_data data.eq.lmp
+
+#################### pair ####################
+
+
+# lj/cut/coul/long  i      j   eps     sigma
+pair_coeff * *  0.3  1.0
+
+# fene      bond-type K r0 epsilon sigma
+bond_coeff     1  30.0 1.5 0.3 1.0
+
+minimize 1.0e-4 1.0e-6 100 1000
+reset_timestep 0
+
+
+# variables 
+#
+variable tstep equal 0.005
+variable Pfix equal 0.0          # p sig^3/eps 
+variable Tfix equal 1.0      # KbT/eps
+
+
+variable T_dT equal 0.1         #damp
+variable P_dp equal 1000*${tstep}
+
+timestep ${tstep}
+
+velocity all create ${Tfix} 12345
+
+#########################################################
+
+fix NPH all nph iso ${Pfix} ${Pfix} ${P_dp}
+fix TSTAT all langevin ${Tfix} ${Tfix} ${T_dT} 12345 zero yes
+
+#######################################################
+
+
+thermo_style custom step cpu etotal ke pe evdwl ecoul elong ebond temp press vol density
+thermo 500
+
+dump TRAJ all custom 1000  dump.lammpstrj id mol type mass q xu yu zu
+#dump_modify TRAJ sort id
+
+restart 10000 restart1.lmp restart2.lmp
+
+
+run 500000
+
+write_data data.dyn.lmp
