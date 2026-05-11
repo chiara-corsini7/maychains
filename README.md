@@ -11,7 +11,7 @@ The polymers will be described by:
 * Fene bonds
 * Mass = 1
 * Charge = 0
-* Shifted LJ potential (\sigma=1, \epsilon=1)
+* Shifted LJ potential (\sigma=1, \epsilon=0.3)
 
 ## Step 1. Initialization
 
@@ -94,5 +94,21 @@ Write a comment for each of trend and give an explanation on their behavior comp
 
 ## Step 4. Analysis
 
+Use [lmps2gsd_multi.py](analysis/lmps2gsd_multi.py) to create a trajectory in `gsd` format. To run the script you will need to get the gsd package
+
+```$conda install conda-forge::gsd```
 
 
+And then you can generate the gsd trajectory providing the lammps data file (which contains information on the topology) and the lammps trajectory file.
+
+```
+$lmps2gsd_multi.py -i dump.lammpstrj -t data.lmp -o traj.gsd -n 1              
+```
+
+This will allow you to perform analysis in python using the [gsd.hoomd]{https://gsd.readthedocs.io/en/v4.2.0/python-module-gsd.hoomd.html} module. Using the documentation of the 'gsd.hoomd' module write a python code to calculate
+
+* end-to-end distance
+* radius of gyration
+* mean squared displacement
+
+It is easier and more immediate to use jupyter notebook ([analysis.ipynb](analysis/analysis.ipynb)) to test the code.
